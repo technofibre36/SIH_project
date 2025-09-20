@@ -1,176 +1,674 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>No Rockfall — Dashboard</title>
-
+    <title>RockfallAI — Professional Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
-            fontFamily: {
+            fontFamily: { 
               display: ["Inter", "ui-sans-serif", "system-ui"],
+              mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular"]
             },
+            colors: { 
+              brand: { 
+                50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+                400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+                800: '#991b1b', 900: '#7f1d1d', 950: '#450a0a'
+              },
+              accent: {
+                50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+                400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+                800: '#075985', 900: '#0c4a6e', 950: '#082f49'
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-in-out',
+              'slide-up': 'slideUp 0.3s ease-out',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'bounce-subtle': 'bounceSubtle 2s infinite',
+              'glow': 'glow 2s ease-in-out infinite alternate'
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              },
+              slideUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              },
+              bounceSubtle: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' }
+              },
+              glow: {
+                '0%': { boxShadow: '0 0 20px rgba(220, 38, 38, 0.3)' },
+                '100%': { boxShadow: '0 0 30px rgba(220, 38, 38, 0.6)' }
+              }
+            },
+            backdropBlur: {
+              xs: '2px'
+            }
           },
         },
       };
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      .glass-effect {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(71, 85, 105, 0.2);
+      }
+      .gradient-border {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(14, 165, 233, 0.1));
+        border: 1px solid transparent;
+        background-clip: padding-box;
+      }
+      .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+      .status-indicator {
+        position: relative;
+        overflow: hidden;
+      }
+      .status-indicator::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.6s ease;
+      }
+      .status-indicator:hover::before {
+        left: 100%;
+      }
+    </style>
   </head>
-  <body class="min-h-screen bg-slate-100 font-display text-slate-800">
-    <nav class="bg-white shadow-sm border-b border-slate-200">
-      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div
-            class="h-10 w-10 flex items-center justify-center rounded-lg bg-red-600 text-white font-bold"
-          >
-            NR
+  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-display text-slate-100 overflow-x-hidden">
+    <!-- Enhanced Header -->
+    <header class="sticky top-0 z-50 glass-effect border-b border-slate-700/50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <!-- Logo Section -->
+        <div class="flex items-center gap-4">
+          <div class="relative group">
+            <div class="h-12 w-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white font-bold text-lg shadow-lg group-hover:shadow-brand-500/25 transition-all duration-300">
+              NR
+            </div>
+            <div class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-accent-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
           </div>
-          <span class="text-xl font-bold">Rockfall</span>
+          <div class="flex flex-col">
+            <span class="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">RockfallAI</span>
+            <span class="text-xs text-slate-400 font-mono">Professional Monitoring System</span>
+          </div>
         </div>
-        <div class="flex items-center gap-6">
-          <span class="text-slate-600">Welcome, <%= username %> </span>
-          <a
-            href="/logout"
-            class="rounded-lg bg-red-600 px-4 py-2 text-sm text-white font-medium hover:bg-red-700"
-            >Logout</a
-          >
+
+        <!-- User Controls -->
+        <div class="flex items-center gap-4">
+          <!-- System Status -->
+          <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-xl glass-effect">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium text-green-400">System Online</span>
+            </div>
+            <div class="w-px h-4 bg-slate-600"></div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-shield-alt text-accent-400 text-sm"></i>
+              <span class="text-sm text-slate-300">Secure</span>
+            </div>
+          </div>
+
+          <!-- User Info -->
+          <div class="flex items-center gap-3 px-4 py-2 rounded-xl glass-effect">
+            <div class="w-8 h-8 bg-gradient-to-br from-accent-400 to-accent-600 rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-white text-sm"></i>
+            </div>
+            <div class="hidden sm:block">
+              <div class="text-sm font-medium text-white">Welcome, <%= username %></div>
+              <div class="text-xs text-slate-400">Administrator</div>
+            </div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="relative p-3 rounded-xl glass-effect hover:bg-slate-700/50 transition-all duration-300 group" aria-label="Toggle theme">
+            <span id="themeIcon" class="text-xl group-hover:scale-110 transition-transform duration-300">🌙</span>
+            <div class="absolute -inset-1 bg-gradient-to-r from-slate-600 to-slate-500 rounded-xl blur opacity-0 group-hover:opacity-20 transition duration-300"></div>
+          </button>
+
+          <!-- Logout Button -->
+          <a href="/logout" class="relative px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white font-medium hover:from-brand-700 hover:to-brand-800 transition-all duration-300 group shadow-lg hover:shadow-brand-500/25">
+            <span class="relative z-10 flex items-center gap-2">
+              <i class="fas fa-sign-out-alt"></i>
+              <span class="hidden sm:inline">Logout</span>
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl blur opacity-0 group-hover:opacity-50 transition duration-300"></div>
+          </a>
         </div>
       </div>
-    </nav>
+    </header>
 
-    <div class="max-w-6xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-4 gap-6 px-4">
-      <aside class="hidden md:block col-span-1">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <h2 class="font-semibold text-slate-800">Navigation</h2>
-          <ul class="mt-4 space-y-2 text-slate-700 text-sm">
-            <li><a href="#home" class="hover:text-red-600">Home</a></li>
-            <li><a href="#prediction" class="hover:text-red-600">Rockfall Prediction</a></li>
-            <li><a href="/prediction" class="hover:text-red-600">Rockfall written</a></li>
-            <li><a href="#news" class="hover:text-red-600">News Section</a></li>
-            <li><a href="#chat" class="hover:text-red-600">AI Chat</a></li>
-            <li><a href="#" class="hover:text-red-600">Settings</a></li>
-          </ul>
+    <!-- Horizontal Navigation Bar -->
+    <div class="max-w-7xl mx-auto py-6 px-6">
+      <div class="glass-effect rounded-3xl p-6 border border-slate-700/50">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-8 h-8 bg-gradient-to-br from-accent-400 to-accent-600 rounded-xl flex items-center justify-center">
+            <i class="fas fa-compass text-white text-sm"></i>
+          </div>
+          <h2 class="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Navigation</h2>
         </div>
-      </aside>
-
-      <main class="col-span-3 space-y-6">
-
-        <section id="home" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h2 class="text-2xl font-bold text-slate-800 mb-4">Welcome to No Rockfall</h2>
-          <p class="text-slate-700">
-            This dashboard helps you predict and monitor potential rockfall areas.
-            Use the navigation to access different features like the **Rockfall Prediction**
-            tool, the **News Section** for the latest updates, and the **AI Chat**
-            for assistance.
-          </p>
-        </section>
-
-        <section id="prediction" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h2 class="text-2xl font-bold text-slate-800 mb-4">Rockfall Prediction</h2>
-          <p class="text-slate-700 mb-4">
-            Upload images of a mountainous area to have our machine learning model
-            analyze it for potential rockfall risks. The predicted risk level will
-            be displayed below.
-          </p>
-
-          <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center">
-            <input
-              type="file"
-              id="image-upload"
-              accept="image/*"
-              class="hidden"
-            />
-            <label
-              for="image-upload"
-              class="cursor-pointer text-red-600 font-medium hover:text-red-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="mx-auto h-12 w-12 text-slate-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 16a4 4 0 01-.883 2.117A4 4 0 013 20c-1.657 0-3-1.343-3-3s1.343-3 3-3a4 4 0 011.883-.883A4.001 4.001 0 017 16zM15 12h-4v4l-4-4 4-4v4h4zM19 12a4 4 0 01-3 1.342V15a4 4 0 00-3-1.342V12h-2v4h2v-2a4 4 0 013-1.342V12h4a4 4 0 00-4-4V5a4 4 0 014 4v3h2a4 4 0 01-4 4z"
-                />
-              </svg>
-              <span>Click to upload image</span>
-            </label>
-            <p class="mt-2 text-sm text-slate-500">PNG, JPG, GIF up to 10MB</p>
-          </div>
-
-          <div id="predicted-area" class="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 hidden">
-            <h3 class="font-semibold text-lg text-slate-800">Predicted Result:</h3>
-            <p class="mt-2 text-red-600 font-bold text-xl">High Risk</p>
-            <p class="text-sm text-slate-500">Based on image analysis</p>
-          </div>
-        </section>
         
-        <section id="news" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h2 class="text-2xl font-bold text-slate-800 mb-4">Latest Rockfall News</h2>
-          <div class="space-y-4">
-            <div class="border-b border-slate-200 pb-4">
-              <h3 class="font-semibold text-lg text-slate-800">Rockfall closes mountain pass in Colorado</h3>
-              <p class="text-sm text-slate-500">October 26, 2025</p>
-              <p class="mt-2 text-slate-700">
-                A significant rockfall event has led to the temporary closure of Highway 50 near Monarch Pass.
-                Emergency crews are on site to clear the debris and assess the stability of the slope.
-              </p>
+        <!-- Horizontal Navigation -->
+        <nav class="flex flex-wrap gap-4 justify-center lg:justify-start">
+          <a href="#overview" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-chart-line text-white text-lg"></i>
             </div>
-            <div class="border-b border-slate-200 pb-4">
-              <h3 class="font-semibold text-lg text-slate-800">New drone technology for rockfall monitoring</h3>
-              <p class="text-sm text-slate-500">October 24, 2025</p>
-              <p class="mt-2 text-slate-700">
-                Researchers at a local university have developed an AI-powered drone system to monitor
-                and detect subtle movements in cliffs, potentially preventing future rockfall incidents.
-              </p>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-brand-300 transition-colors text-sm">Overview</div>
+              <div class="text-xs text-slate-400">System metrics</div>
             </div>
+            <div class="w-2 h-2 bg-brand-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="/prediction" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-brain text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-purple-300 transition-colors text-sm">Prediction</div>
+              <div class="text-xs text-slate-400">AI analysis</div>
+            </div>
+            <div class="w-2 h-2 bg-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="/notifications" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-bell text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-yellow-300 transition-colors text-sm">Notifications</div>
+              <div class="text-xs text-slate-400">Alert settings</div>
+            </div>
+            <div class="w-2 h-2 bg-yellow-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="/news-by-date" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-newspaper text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-blue-300 transition-colors text-sm">News</div>
+              <div class="text-xs text-slate-400">Latest updates</div>
+            </div>
+            <div class="w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="/location" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-location-dot text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-green-300 transition-colors text-sm">Location</div>
+              <div class="text-xs text-slate-400">Live tracking</div>
+            </div>
+            <div class="w-2 h-2 bg-green-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="/precaution" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-shield-alt text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-orange-300 transition-colors text-sm">Precaution</div>
+              <div class="text-xs text-slate-400">Safety guidelines</div>
+            </div>
+            <div class="w-2 h-2 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="#writer" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-file-alt text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-indigo-300 transition-colors text-sm">Report Writer</div>
+              <div class="text-xs text-slate-400">Documentation</div>
+            </div>
+            <div class="w-2 h-2 bg-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <a href="#chat" class="group flex flex-col items-center gap-2 px-6 py-4 rounded-2xl hover:bg-slate-700/50 transition-all duration-300 relative overflow-hidden min-w-[120px]">
+            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-comments text-white text-lg"></i>
+            </div>
+            <div class="text-center">
+              <div class="font-medium text-white group-hover:text-pink-300 transition-colors text-sm">AI Chat</div>
+              <div class="text-xs text-slate-400">Assistant</div>
+            </div>
+            <div class="w-2 h-2 bg-pink-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto py-8 px-6">
+
+      <!-- Main Content Area -->
+      <main class="space-y-8">
+        <!-- Enhanced Overview Cards -->
+        <section id="overview" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Predictions Card -->
+          <div class="group glass-effect rounded-3xl p-6 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-brand-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-chart-line text-white text-lg"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Predictions</div>
+                  <div class="text-xs text-green-400 font-mono">+15% this week</div>
+                </div>
+              </div>
+              <div class="text-4xl font-bold text-white mb-2">12</div>
+              <div class="text-sm text-slate-400">AI-generated risk assessments</div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 to-brand-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+          </div>
+
+          <!-- High-Risk Alerts Card -->
+          <div class="group glass-effect rounded-3xl p-6 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-exclamation-triangle text-white text-lg"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">High-Risk</div>
+                  <div class="text-xs text-red-400 font-mono">Requires attention</div>
+                </div>
+              </div>
+              <div class="text-4xl font-bold text-red-400 mb-2 animate-pulse">3</div>
+              <div class="text-sm text-slate-400">Critical alerts pending</div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+          </div>
+
+          <!-- News Mentions Card -->
+          <div class="group glass-effect rounded-3xl p-6 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-newspaper text-white text-lg"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">News</div>
+                  <div class="text-xs text-blue-400 font-mono">+8% today</div>
+                </div>
+              </div>
+              <div class="text-4xl font-bold text-blue-400 mb-2">28</div>
+              <div class="text-sm text-slate-400">Media mentions tracked</div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
           </div>
         </section>
 
-        <section id="chat" class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h2 class="text-2xl font-bold text-slate-800 mb-4">Chat with No Rockfall AI</h2>
-          <div class="h-64 overflow-y-auto border border-slate-300 rounded-lg p-4 space-y-4 mb-4">
-            <div class="flex justify-start">
-              <div class="bg-slate-200 rounded-lg p-3 max-w-sm">
-                <p class="text-sm">Hello! I'm here to help you. Ask me anything about rockfall prevention or safety.</p>
+        <!-- Enhanced Action Cards -->
+        <section class="grid md:grid-cols-3 gap-6">
+          <!-- Run Prediction Card -->
+          <a href="/prediction" class="group glass-effect rounded-3xl p-8 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <i class="fas fa-brain text-white text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">Run Prediction</h3>
+                  <div class="text-sm text-slate-400">AI-powered analysis</div>
+                </div>
+                <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
+                  <i class="fas fa-arrow-right text-purple-400 text-sm"></i>
+                </div>
+              </div>
+              <p class="text-slate-300 leading-relaxed mb-4">Use environmental inputs to estimate rockfall probability with advanced machine learning algorithms.</p>
+              <div class="flex items-center gap-2 text-sm text-purple-400">
+                <i class="fas fa-clock"></i>
+                <span>~2 minutes processing time</span>
               </div>
             </div>
-            <div class="flex justify-end">
-              <div class="bg-red-600 text-white rounded-lg p-3 max-w-sm">
-                <p class="text-sm">What are some common causes of rockfall?</p>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+          </a>
+
+          <!-- Notifications Card -->
+          <a href="/notifications" class="group glass-effect rounded-3xl p-8 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <i class="fas fa-bell text-white text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors">Notifications</h3>
+                  <div class="text-sm text-slate-400">Alert management</div>
+                </div>
+                <div class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center group-hover:bg-yellow-500/30 transition-colors">
+                  <i class="fas fa-arrow-right text-yellow-400 text-sm"></i>
+                </div>
               </div>
+              <p class="text-slate-300 leading-relaxed mb-4">Configure email and SMS alerts for rockfall warnings with customizable thresholds and delivery preferences.</p>
+              <div class="flex items-center gap-2 text-sm text-yellow-400">
+                <i class="fas fa-shield-alt"></i>
+                <span>Real-time monitoring</span>
+              </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+          </a>
+
+          <!-- Latest News Card -->
+          <a href="/news" class="group glass-effect rounded-3xl p-8 border border-slate-700/50 card-hover relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <i class="fas fa-newspaper text-white text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">Latest News</h3>
+                  <div class="text-sm text-slate-400">Media monitoring</div>
+                </div>
+                <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                  <i class="fas fa-arrow-right text-blue-400 text-sm"></i>
+                </div>
+              </div>
+              <p class="text-slate-300 leading-relaxed mb-4">Track headlines related to terrain safety, geological events, and environmental conditions from trusted sources.</p>
+              <div class="flex items-center gap-2 text-sm text-blue-400">
+                <i class="fas fa-rss"></i>
+                <span>Updated every hour</span>
+              </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+          </a>
+        </section>
+
+        <!-- Enhanced Report Writer -->
+        <section id="writer" class="glass-effect rounded-3xl p-8 border border-slate-700/50">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-file-alt text-white text-xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">Report Writer</h2>
+              <p class="text-slate-400">Draft professional operations notes and incident reports</p>
             </div>
           </div>
-          <form onsubmit="event.preventDefault(); alert('Message Sent!');">
-            <div class="flex gap-2">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                class="w-full rounded-lg border border-slate-300 p-3 focus:ring-2 focus:ring-red-400"
-              />
-              <button
-                type="submit"
-                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-medium"
-              >
-                Send
+          
+          <form onsubmit="event.preventDefault(); document.getElementById('writerOutput').classList.remove('hidden');" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-300">Location</label>
+                <input type="text" placeholder="e.g., Sector 4, North Slope" class="w-full px-4 py-3 rounded-2xl bg-slate-800/50 border border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-slate-300">Conditions</label>
+                <input type="text" placeholder="e.g., heavy rain, high winds" class="w-full px-4 py-3 rounded-2xl bg-slate-800/50 border border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300" />
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-slate-300">Detailed Notes</label>
+              <textarea rows="4" placeholder="Describe the situation, observations, and any immediate concerns..." class="w-full px-4 py-3 rounded-2xl bg-slate-800/50 border border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300 resize-none"></textarea>
+            </div>
+            
+            <div class="flex gap-4">
+              <button type="submit" class="group relative px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-medium rounded-2xl hover:from-indigo-700 hover:to-indigo-800 transition-all duration-300 shadow-lg hover:shadow-indigo-500/25">
+                <span class="relative z-10 flex items-center gap-2">
+                  <i class="fas fa-magic"></i>
+                  Generate Summary
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl blur opacity-0 group-hover:opacity-50 transition duration-300"></div>
+              </button>
+              <button type="reset" class="px-8 py-3 border border-slate-600 text-slate-300 font-medium rounded-2xl hover:bg-slate-700/50 hover:border-slate-500 transition-all duration-300">
+                <i class="fas fa-eraser mr-2"></i>
+                Clear Form
               </button>
             </div>
+          </form>
+          
+          <div id="writerOutput" class="hidden mt-8 glass-effect rounded-2xl p-6 border border-slate-700/50">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-check text-white text-sm"></i>
+              </div>
+              <h4 class="text-lg font-semibold text-white">AI-Generated Summary</h4>
+            </div>
+            <div class="prose prose-invert max-w-none">
+              <p class="text-slate-300 leading-relaxed">Potential instability detected under current conditions. Recommend on-site inspection and temporary trail closure until slope assessment is complete. Weather conditions may exacerbate existing vulnerabilities.</p>
+            </div>
+            <div class="mt-4 flex items-center gap-4 text-sm text-slate-400">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-clock"></i>
+                <span>Generated 2 minutes ago</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-shield-alt"></i>
+                <span>High confidence</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Enhanced Notification Test -->
+        <section class="glass-effect rounded-3xl p-8 border border-slate-700/50">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-bell text-white text-xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">Notification Testing</h2>
+              <p class="text-slate-400">Verify your alert systems are functioning correctly</p>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-3 gap-6 mb-6">
+            <button onclick="testEmail()" class="group glass-effect rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 card-hover">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-envelope text-white text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-white">Email Test</h3>
+                  <p class="text-sm text-slate-400">Send test email</p>
+                </div>
+              </div>
+              <p class="text-slate-300 text-sm">Verify email delivery and formatting</p>
+            </button>
+
+            <button onclick="testSMS()" class="group glass-effect rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 card-hover">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-sms text-white text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-white">SMS Test</h3>
+                  <p class="text-sm text-slate-400">Send test message</p>
+                </div>
+              </div>
+              <p class="text-slate-300 text-sm">Check SMS delivery and content</p>
+            </button>
+
+            <button onclick="sendTestAlert()" class="group glass-effect rounded-2xl p-6 border border-slate-700/50 hover:border-red-500/50 transition-all duration-300 card-hover">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <i class="fas fa-exclamation-triangle text-white text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-white">Alert Test</h3>
+                  <p class="text-sm text-slate-400">Send test alert</p>
+                </div>
+              </div>
+              <p class="text-slate-300 text-sm">Simulate emergency notification</p>
+            </button>
+          </div>
+          
+          <div id="testResult" class="hidden glass-effect rounded-2xl p-4 border border-slate-700/50"></div>
+        </section>
+
+        <!-- Enhanced AI Chat -->
+        <section id="chat" class="glass-effect rounded-3xl p-8 border border-slate-700/50">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-comments text-white text-xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">AI Assistant</h2>
+              <p class="text-slate-400">Get instant help with rockfall analysis and safety protocols</p>
+            </div>
+          </div>
+          
+          <div class="h-80 overflow-y-auto border border-slate-700/50 rounded-2xl p-6 space-y-4 mb-6 bg-slate-800/30">
+            <div class="flex justify-start">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-robot text-white text-sm"></i>
+                </div>
+                <div class="glass-effect rounded-2xl p-4 max-w-sm">
+                  <p class="text-slate-300 text-sm">Hello! I'm your RockfallAI assistant. I can help you with risk assessment, safety protocols, and geological analysis. What would you like to know?</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex justify-end">
+              <div class="flex items-start gap-3 flex-row-reverse">
+                <div class="w-8 h-8 bg-gradient-to-br from-accent-500 to-accent-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                <div class="glass-effect rounded-2xl p-4 max-w-sm">
+                  <p class="text-slate-300 text-sm">What are some common causes of rockfall?</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <form onsubmit="event.preventDefault(); alert('Message Sent!');" class="flex gap-4">
+            <input type="text" placeholder="Ask about rockfall safety, risk assessment, or geological conditions..." class="flex-1 px-6 py-4 rounded-2xl bg-slate-800/50 border border-slate-600 text-white placeholder-slate-400 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 transition-all duration-300" />
+            <button type="submit" class="group relative px-8 py-4 bg-gradient-to-r from-pink-600 to-pink-700 text-white font-medium rounded-2xl hover:from-pink-700 hover:to-pink-800 transition-all duration-300 shadow-lg hover:shadow-pink-500/25">
+              <span class="relative z-10 flex items-center gap-2">
+                <i class="fas fa-paper-plane"></i>
+                <span class="hidden sm:inline">Send</span>
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl blur opacity-0 group-hover:opacity-50 transition duration-300"></div>
+            </button>
           </form>
         </section>
       </main>
     </div>
+
+    <script>
+      const html = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = document.getElementById('themeIcon');
+      const setIcon = () => themeIcon && (themeIcon.textContent = html.classList.contains('dark') ? '☀️' : '🌙');
+      const applyStoredTheme = () => {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          html.classList.add('dark');
+        } else {
+          html.classList.remove('dark');
+        }
+        setIcon();
+      };
+      const toggleTheme = () => {
+        html.classList.toggle('dark');
+        localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        setIcon();
+      };
+      themeToggle?.addEventListener('click', toggleTheme);
+      applyStoredTheme();
+
+      // Notification test functions
+      async function testEmail() {
+        const resultDiv = document.getElementById('testResult');
+        resultDiv.classList.remove('hidden');
+        resultDiv.innerHTML = '<div class="flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> Testing email...</div>';
+        
+        try {
+          const response = await fetch('/notifications/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const result = await response.json();
+          
+          if (result.success && result.results.email && result.results.email.success) {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-green-600"><i class="fas fa-check-circle"></i> Email test sent successfully!</div>';
+          } else {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> Email test failed. Check your settings.</div>';
+          }
+        } catch (error) {
+          resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> Error: ' + error.message + '</div>';
+        }
+      }
+
+      async function testSMS() {
+        const resultDiv = document.getElementById('testResult');
+        resultDiv.classList.remove('hidden');
+        resultDiv.innerHTML = '<div class="flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> Testing SMS...</div>';
+        
+        try {
+          const response = await fetch('/notifications/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const result = await response.json();
+          
+          if (result.success && result.results.sms && result.results.sms.success) {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-green-600"><i class="fas fa-check-circle"></i> SMS test sent successfully!</div>';
+          } else {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> SMS test failed. Check your phone number and settings.</div>';
+          }
+        } catch (error) {
+          resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> Error: ' + error.message + '</div>';
+        }
+      }
+
+      async function sendTestAlert() {
+        const resultDiv = document.getElementById('testResult');
+        resultDiv.classList.remove('hidden');
+        resultDiv.innerHTML = '<div class="flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> Sending test alert...</div>';
+        
+        try {
+          const response = await fetch('/admin/send-alert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ riskLevel: 'HIGH', message: 'This is a test alert from RockfallAI' })
+          });
+          const result = await response.json();
+          
+          if (result.success) {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-green-600"><i class="fas fa-check-circle"></i> Test alert sent successfully! Check your notifications.</div>';
+          } else {
+            resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> Alert failed: ' + result.error + '</div>';
+          }
+        } catch (error) {
+          resultDiv.innerHTML = '<div class="flex items-center gap-2 text-red-600"><i class="fas fa-exclamation-circle"></i> Error: ' + error.message + '</div>';
+        }
+      }
+    </script>
   </body>
 </html>

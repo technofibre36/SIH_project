@@ -1,0 +1,184 @@
+<%- include('layout', { title: 'Setup Guide - RockfallAI' }) %>
+
+<div class="container" style="max-width:800px;margin:24px auto;padding:16px;">
+  <h2>Setup Guide</h2>
+  <p>Follow these steps to enable notifications and predictions.</p>
+
+  <h3>1) Environment</h3>
+  <pre style="background:#f6f8fa;padding:12px;border-radius:6px;">
+NEWS_API_KEY=your_news_api_key
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=you@example.com
+SMTP_PASS=your_app_password
+MAIL_FROM=RockfallAI &lt;you@example.com&gt;
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_FROM_NUMBER=+1XXXXXXXXXX
+  </pre>
+
+  <h3>2) Run servers</h3>
+  <pre style="background:#f6f8fa;padding:12px;border-radius:6px;">
+npm install
+npm run start:flask
+# in another terminal
+npm start
+  </pre>
+
+  <h3>3) Configure preferences</h3>
+  <p>Register or login, then open <code>/notifications</code> to set channels and phone.</p>
+</div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide - RockfallAI</title>
+    <meta name="description" content="Setup guide for RockfallAI notification system">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+<body class="auth-page">
+    <!-- Background Animation -->
+    <div class="auth-background">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-mountain"></i>
+                <span>RockfallAI</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <!-- Setup Guide -->
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h1>Setup Guide</h1>
+                    <p>Configure your RockfallAI notification system</p>
+                </div>
+
+                <div class="setup-content">
+                    <div class="setup-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Create Account</h3>
+                            <p>Register for a RockfallAI account to access the notification system.</p>
+                            <a href="/register" class="btn btn-primary">Register Now</a>
+                        </div>
+                    </div>
+
+                    <div class="setup-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Configure Notifications</h3>
+                            <p>Set up your email and SMS preferences for rockfall alerts.</p>
+                            <a href="/notifications" class="btn btn-secondary">Configure</a>
+                        </div>
+                    </div>
+
+                    <div class="setup-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Test System</h3>
+                            <p>Test your notification settings to ensure everything works correctly.</p>
+                            <a href="/dashboard" class="btn btn-secondary">Test Now</a>
+                        </div>
+                    </div>
+
+                    <div class="setup-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Start Predicting</h3>
+                            <p>Use the prediction system to monitor rockfall risks in your area.</p>
+                            <a href="/prediction" class="btn btn-secondary">Predict</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-footer">
+                    <p><a href="/">← Back to Home</a></p>
+                </div>
+            </div>
+
+            <!-- Features Panel -->
+            <div class="auth-illustration">
+                <div class="illustration-content">
+                    <div class="illustration-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2>Early Warning System</h2>
+                    <p>Get instant notifications when rockfall risks are detected in your area.</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email Alerts</h4>
+                                <p>Detailed notifications with safety instructions</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-sms"></i>
+                            <div>
+                                <h4>SMS Alerts</h4>
+                                <p>Instant text messages for urgent warnings</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-brain"></i>
+                            <div>
+                                <h4>AI Predictions</h4>
+                                <p>Advanced machine learning for accurate risk assessment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<%- include('layout', { title: 'Notification Preferences' }) %>
+
+<div class="container" style="max-width:800px;margin:24px auto;padding:16px;">
+  <h2>Notification Preferences</h2>
+
+  <% if (typeof window === 'undefined' && query && query.success) { %>
+    <div class="alert alert-success">Preferences updated successfully.</div>
+  <% } %>
+
+  <form action="/notifications/update" method="POST" style="margin-top:16px;">
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Username</label>
+      <input type="text" class="form-control" value="<%= user.username %>" disabled />
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Email</label>
+      <input name="emailAddress" type="email" class="form-control" value="<%= user.email %>" disabled />
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Phone (for SMS)</label>
+      <input name="phone" type="tel" class="form-control" value="<%= user.phone || '' %>" placeholder="e.g. +91XXXXXXXXXX" />
+    </div>
+
+    <fieldset style="margin:16px 0;">
+      <legend>Channels</legend>
+      <label style="display:block;margin-bottom:6px;">
+        <input name="email" type="checkbox" <%= user.notificationPreferences?.email ? 'checked' : '' %> /> Email Alerts
+      </label>
+      <label style="display:block;margin-bottom:6px;">
+        <input name="sms" type="checkbox" <%= user.notificationPreferences?.sms ? 'checked' : '' %> /> SMS Alerts
+      </label>
+    </fieldset>
+
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>Minimum Risk Threshold</label>
+      <select name="riskThreshold" class="form-control">
+        <option value="LOW" <%= user.notificationPreferences?.riskThreshold === 'LOW' ? 'selected' : '' %>>LOW</option>
+        <option value="MEDIUM" <%= user.notificationPreferences?.riskThreshold === 'MEDIUM' ? 'selected' : '' %>>MEDIUM</option>
+        <option value="HIGH" <%= user.notificationPreferences?.riskThreshold === 'HIGH' ? 'selected' : '' %>>HIGH</option>
+        <option value="CRITICAL" <%= user.notificationPreferences?.riskThreshold === 'CRITICAL' ? 'selected' : '' %>>CRITICAL</option>
+      </select>
+    </div>
+
+    <fieldset style="margin:16px 0;">
+      <legend>Location (optional)</legend>
+      <div class="form-row" style="display:flex;gap:8px;">
+        <input name="latitude" type="number" step="any" class="form-control" placeholder="Latitude" value="<%= user.location?.latitude || '' %>">
+        <input name="longitude" type="number" step="any" class="form-control" placeholder="Longitude" value="<%= user.location?.longitude || '' %>">
+      </div>
+      <input name="address" type="text" class="form-control" placeholder="Address" style="margin-top:8px;" value="<%= user.location?.address || '' %>">
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary">Save Preferences</button>
+  </form>
+
+  <hr style="margin:24px 0;" />
+
+  <h3>Send Test Notification</h3>
+  <p>This will send a test email/SMS using your current preferences.</p>
+  <button id="testBtn" class="btn btn-secondary">Send Test</button>
+  <pre id="testResult" style="background:#f6f8fa;padding:12px;margin-top:12px;border-radius:6px;max-height:240px;overflow:auto;"></pre>
+</div>
+
+<script>
+  const btn = document.getElementById('testBtn');
+  const out = document.getElementById('testResult');
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      out.textContent = 'Sending…';
+      try {
+        const res = await fetch('/notifications/test', { method: 'POST' });
+        const data = await res.json();
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = e.message;
+      }
+    });
+  }
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings - RockfallAI</title>
+    <meta name="description" content="Manage your notification preferences for rockfall alerts and warnings.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+<body class="auth-page">
+    <!-- Background Animation -->
+    <div class="auth-background">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-mountain"></i>
+                <span>RockfallAI</span>
+            </div>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="/prediction" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    Prediction
+                </a>
+                <a href="/notifications" class="nav-link active">
+                    <i class="fas fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="/logout" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <!-- Notification Settings Form -->
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h1>Notification Settings</h1>
+                    <p>Configure how you want to receive rockfall alerts and warnings</p>
+                </div>
+
+                <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Settings updated successfully!
+                    </div>
+                <% } %>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Error updating settings. Please try again.
+                    </div>
+                <% } %>
+
+                <form action="/notifications/update" method="POST" class="auth-form">
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-phone"></i> Contact Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-group">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" value="<%= user.email || '' %>" readonly>
+                            </div>
+                            <span class="input-hint">This email will be used for notifications</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number (for SMS)</label>
+                            <div class="input-group">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>" placeholder="+1234567890">
+                            </div>
+                            <span class="input-hint">Include country code (e.g., +1 for US)</span>
+                        </div>
+                    </div>
+
+                    <!-- Notification Preferences -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
+                        
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="email" <%= user.notificationPreferences?.email ? 'checked' : '' %>>
+                                <span class="checkmark"></span>
+                                <div class="checkbox-content">
+                                    <strong>Email Notifications</strong>
+                                    <p>Receive alerts via email</p>
+                                </div>
+                            </label>
+
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="sms" <%= user.notificationPreferences?.sms ? 'checked' : '' %>>
+                                <span class="checkmark"></span>
+                                <div class="checkbox-content">
+                                    <strong>SMS Notifications</strong>
+                                    <p>Receive alerts via text message</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="riskThreshold">Alert Threshold</label>
+                            <div class="input-group">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <select id="riskThreshold" name="riskThreshold">
+                                    <option value="LOW" <%= user.notificationPreferences?.riskThreshold === 'LOW' ? 'selected' : '' %>>Low Risk (40%+ probability)</option>
+                                    <option value="MEDIUM" <%= user.notificationPreferences?.riskThreshold === 'MEDIUM' ? 'selected' : '' %>>Medium Risk (60%+ probability)</option>
+                                    <option value="HIGH" <%= user.notificationPreferences?.riskThreshold === 'HIGH' ? 'selected' : '' %>>High Risk (80%+ probability)</option>
+                                    <option value="CRITICAL" <%= user.notificationPreferences?.riskThreshold === 'CRITICAL' ? 'selected' : '' %>>Critical Risk (90%+ probability)</option>
+                                </select>
+                            </div>
+                            <span class="input-hint">Choose when you want to receive alerts</span>
+                        </div>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="latitude">Latitude</label>
+                                <div class="input-group">
+                                    <i class="fas fa-map-pin"></i>
+                                    <input type="number" id="latitude" name="latitude" value="<%= user.location?.latitude || '' %>" step="any" placeholder="40.7128">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="longitude">Longitude</label>
+                                <div class="input-group">
+                                    <i class="fas fa-map-pin"></i>
+                                    <input type="number" id="longitude" name="longitude" value="<%= user.location?.longitude || '' %>" step="any" placeholder="-74.0060">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address (Optional)</label>
+                            <div class="input-group">
+                                <i class="fas fa-home"></i>
+                                <input type="text" id="address" name="address" value="<%= user.location?.address || '' %>" placeholder="123 Main St, City, State">
+                            </div>
+                            <span class="input-hint">Your general location for context in alerts</span>
+                        </div>
+                    </div>
+
+                    <!-- Test Notifications -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-vial"></i> Test Notifications</h3>
+                        <p>Send a test notification to verify your settings are working correctly.</p>
+                        
+                        <div class="test-buttons">
+                            <button type="button" id="testEmail" class="btn btn-secondary">
+                                <i class="fas fa-envelope"></i>
+                                Test Email
+                            </button>
+                            <button type="button" id="testSMS" class="btn btn-secondary">
+                                <i class="fas fa-sms"></i>
+                                Test SMS
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-save"></i>
+                        Save Settings
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p><a href="/dashboard">← Back to Dashboard</a></p>
+                </div>
+            </div>
+
+            <!-- Information Panel -->
+            <div class="auth-illustration">
+                <div class="illustration-content">
+                    <div class="illustration-icon">
+                        <i class="fas fa-bell-slash"></i>
+                    </div>
+                    <h2>Stay Safe with Alerts</h2>
+                    <p>Configure your notification preferences to receive timely rockfall warnings and stay informed about potential risks in your area.</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email Alerts</h4>
+                                <p>Detailed notifications with safety instructions</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-sms"></i>
+                            <div>
+                                <h4>SMS Alerts</h4>
+                                <p>Instant text messages for urgent warnings</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-cog"></i>
+                            <div>
+                                <h4>Customizable Thresholds</h4>
+                                <p>Choose when you want to be notified</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        // Test notification functionality
+        document.getElementById('testEmail').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch('/notifications/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.results.email && result.results.email.success) {
+                        showAlert('Test email sent successfully!', 'success');
+                    } else {
+                        showAlert('Email test failed. Please check your email settings.', 'error');
+                    }
+                } else {
+                    showAlert('Test failed: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Error testing email: ' + error.message, 'error');
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+
+        document.getElementById('testSMS').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch('/notifications/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.results.sms && result.results.sms.success) {
+                        showAlert('Test SMS sent successfully!', 'success');
+                    } else {
+                        showAlert('SMS test failed. Please check your phone number and SMS settings.', 'error');
+                    }
+                } else {
+                    showAlert('Test failed: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Error testing SMS: ' + error.message, 'error');
+            } finally {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            
+            const form = document.querySelector('.auth-form');
+            form.insertBefore(alertDiv, form.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
