@@ -87,7 +87,7 @@ app.use(session({
 }));
 
 // ====== MongoDB Setup ======
-mongoose.connect("mongodb://127.0.0.1:27017/loginDemo", {
+mongoose.connect("mongodb+srv://sih_y:<WcTcsj4j9ms5qVsx>@sih.iahzzpd.mongodb.net/", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log("MongoDB Connected"))
