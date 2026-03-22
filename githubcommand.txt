@@ -1,0 +1,9 @@
+origin  https://github.com/your-username/repo.git
+git remote add upstream https://github.com/original-owner/repo.git
+git fetch upstream
+git checkout main 
+git merge upstream/main
+git checkout -b oo     
+git add .    
+git commit -m "cyan"   
+git push origin oo     
